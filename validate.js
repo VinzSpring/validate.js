@@ -151,7 +151,7 @@
       if (typeof v.formatters[format] === 'function') {
         errors = v.formatters[format](errors);
       } else {
-        throw new Error(v.format("Unknown format %{format}", options));
+        throw new Error(v.format("Unbekanntes Format %{format}", options));
       }
 
       return v.isEmpty(errors) ? undefined : errors;
@@ -771,7 +771,7 @@
     presence: function(value, options) {
       options = v.extend({}, this.options, options);
       if (options.allowEmpty !== false ? !v.isDefined(value) : v.isEmpty(value)) {
-        return options.message || this.message || "can't be blank";
+        return options.message || this.message || "darf nicht leer sein";
       }
     },
     length: function(value, options, attribute) {
@@ -792,28 +792,28 @@
       value = tokenizer(value);
       var length = value.length;
       if(!v.isNumber(length)) {
-        return options.message || this.notValid || "has an incorrect length";
+        return options.message || this.notValid || "hat die falsche Länge";
       }
 
       // Is checks
       if (v.isNumber(is) && length !== is) {
         err = options.wrongLength ||
           this.wrongLength ||
-          "is the wrong length (should be %{count} characters)";
+          "hat die falsche Länge (muss %{count} Zeichen sein)";
         errors.push(v.format(err, {count: is}));
       }
 
       if (v.isNumber(minimum) && length < minimum) {
         err = options.tooShort ||
           this.tooShort ||
-          "is too short (minimum is %{count} characters)";
+          "ist zu kurz (mindestens %{count} Zeichen)";
         errors.push(v.format(err, {count: minimum}));
       }
 
       if (v.isNumber(maximum) && length > maximum) {
         err = options.tooLong ||
           this.tooLong ||
-          "is too long (maximum is %{count} characters)";
+          "ist zu lang (maximal %{count} Zeichen)";
         errors.push(v.format(err, {count: maximum}));
       }
 
@@ -857,7 +857,7 @@
             options.notValid ||
             this.notValid ||
             this.message ||
-            "must be a valid number";
+            "muss eine Zahl sein";
         }
       }
 
@@ -872,7 +872,7 @@
           options.notValid ||
           this.notValid ||
           this.message ||
-          "is not a number";
+          "ist keine Zahl";
       }
 
       // Same logic as above, sort of. Don't bother with comparisons if this
@@ -882,7 +882,7 @@
           options.notInteger ||
           this.notInteger ||
           this.message ||
-          "must be an integer";
+          "muss eine Ganzzahl sein";
       }
 
       for (name in checks) {
@@ -891,11 +891,11 @@
           // This picks the default message if specified
           // For example the greaterThan check uses the message from
           // this.notGreaterThan so we capitalize the name and prepend "not"
-          var key = "not" + v.capitalize(name);
+          var key = "nicht" + v.capitalize(name);
           var msg = options[key] ||
             this[key] ||
             this.message ||
-            "must be %{type} %{count}";
+            "muss %{type} %{count} sein";
 
           errors.push(v.format(msg, {
             count: count,
@@ -908,13 +908,13 @@
         errors.push(options.notOdd ||
             this.notOdd ||
             this.message ||
-            "must be odd");
+            "muss ungerade sein");
       }
       if (options.even && value % 2 !== 0) {
         errors.push(options.notEven ||
             this.notEven ||
             this.message ||
-            "must be even");
+            "muss gerade sein");
       }
 
       if (errors.length) {
@@ -946,7 +946,7 @@
         err = options.notValid ||
           options.message ||
           this.notValid ||
-          "must be a valid date";
+          "muss ein Datum sein";
         return v.format(err, {value: arguments[0]});
       }
 
@@ -954,7 +954,7 @@
         err = options.tooEarly ||
           options.message ||
           this.tooEarly ||
-          "must be no earlier than %{date}";
+          "darf nicht vor %{date} liegen";
         err = v.format(err, {
           value: this.format(value, options),
           date: this.format(earliest, options)
@@ -966,7 +966,7 @@
         err = options.tooLate ||
           options.message ||
           this.tooLate ||
-          "must be no later than %{date}";
+          "darf nicht nach %{date} liegen";
         err = v.format(err, {
           date: this.format(latest, options),
           value: this.format(value, options)
@@ -992,7 +992,7 @@
 
       options = v.extend({}, this.options, options);
 
-      var message = options.message || this.message || "is invalid"
+      var message = options.message || this.message || "ist ungültig"
         , pattern = options.pattern
         , match;
 
@@ -1026,7 +1026,7 @@
       }
       var message = options.message ||
         this.message ||
-        "^%{value} is not included in the list";
+        "^%{value} ist nicht Teil der Liste";
       return v.format(message, {value: value});
     },
     exclusion: function(value, options) {
@@ -1041,7 +1041,7 @@
       if (!v.contains(options.within, value)) {
         return;
       }
-      var message = options.message || this.message || "^%{value} is restricted";
+      var message = options.message || this.message || "^%{value} ist eingeschränkt";
       if (v.isString(options.within[value])) {
         value = options.within[value];
       }
@@ -1049,7 +1049,7 @@
     },
     email: v.extend(function(value, options) {
       options = v.extend({}, this.options, options);
-      var message = options.message || this.message || "is not a valid email";
+      var message = options.message || this.message || "ist keine gültige Email";
       // Empty values are fine
       if (!v.isDefined(value)) {
         return;
@@ -1074,10 +1074,10 @@
       options = v.extend({}, this.options, options);
       var message = options.message ||
         this.message ||
-        "is not equal to %{attribute}";
+        "ist nicht gleich %{attribute}";
 
       if (v.isEmpty(options.attribute) || !v.isString(options.attribute)) {
-        throw new Error("The attribute must be a non empty string");
+        throw new Error("darf keine leere Zeichenkette sein");
       }
 
       var otherValue = v.getDeepObjectValue(attributes, options.attribute)
@@ -1101,7 +1101,7 @@
 
       options = v.extend({}, this.options, options);
 
-      var message = options.message || this.message || "is not a valid url"
+      var message = options.message || this.message || "ist keine gültige Url"
         , schemes = options.schemes || this.schemes || ['http', 'https']
         , allowLocal = options.allowLocal || this.allowLocal || false
         , allowDataUrl = options.allowDataUrl || this.allowDataUrl || false;
@@ -1179,7 +1179,7 @@
 
       var type = options.type;
       if (!v.isDefined(type)) {
-        throw new Error("No type was specified");
+        throw new Error("Kein Typ wurde spezifiziert");
       }
 
       var check;
@@ -1198,7 +1198,7 @@
           this.messages[type] ||
           this.message ||
           options.message ||
-          (v.isFunction(type) ? "must be of the correct type" : "must be of type %{type}");
+          (v.isFunction(type) ? "muss der korrekte typ sein" : "muss vom Typ %{type} sein");
 
         if (v.isFunction(message)) {
           message = message(value, originalOptions, attribute, attributes, globalOptions);
